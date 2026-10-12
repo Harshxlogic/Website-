@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsh Vardhan Anand | Spatial Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #030305;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor */
+        }
+
+        /* 3D Inversion Cursor */
+        #custom-cursor {
+            position: fixed;
+            top: 0; left: 0;
+            width: 32px; height: 32px;
+            margin-left: -16px; margin-top: -16px;
+            border-radius: 50%;
+            background-color: white;
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease-out, width 0.2s, height 0.2s, margin 0.2s;
+            will-change: transform;
+        }
+
+        body.hovering #custom-cursor {
+            width: 64px; height: 64px;
+            margin-left: -32px; margin-top: -32px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Ambient Aurora Glow */
+        .aurora-bg {
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(28, 10, 60, 0.15), transparent 60%),
+                        radial-gradient(circle at 80% 20%, rgba(10, 40, 60, 0.15), transparent 50%);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        canvas#webgl-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Spatial UI Glass Cards */
+        .spatial-card {
+            background: rgba(20, 20, 25, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.4s ease, border-color 0.4s ease;
+            will-change: transform;
+            transform-style: preserve-3d;
+        }
+
+        /* 1. Liquid Jelly Wobble Animation */
+        @keyframes fluidWobble {
+            0% { transform: scale3d(1, 1, 1); border-radius: 24px; }
+            30% { transform: scale3d(1.02, 0.98, 1); border-radius: 20px 28px 20px 28px; }
+            40% { transform: scale3d(0.98, 1.02, 1); border-radius: 28px 20px 28px 20px; }
+            50% { transform: scale3d(1.01, 0.99, 1); border-radius: 22px 26px 22px 26px; }
+            65% { transform: scale3d(0.99, 1.01, 1); border-radius: 26px 22px 26px 22px; }
+            75% { transform: scale3d(1.005, 0.995, 1); border-radius: 23px 25px 23px 25px; }
+            100% { transform: scale3d(1, 1, 1); border-radius: 24px; }
+        }
+
+        .spatial-card:hover {
+            animation: fluidWobble 0.9s cubic-bezier(0.25, 1, 0.5, 1);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 2. Fluid Liquid Glow Tracker */
+        .spatial-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle 120px at var(--fluid-x, 50%) var(--fluid-y, 50%), rgba(255, 255, 255, 0.1), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 0;
+            mix-blend-mode: screen;
+        }
+
+        .spatial-card:hover::after { opacity: 1; }
+        .spatial-card > * { position: relative; z-index: 1; }
+    </style>
+</head>
+<body class="selection:bg-white selection:text-black">
+
+    <div id="custom-cursor"></div>
+    <div class="aurora-bg"></div>
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-40 p-6 flex justify-between items-center mix-blend-difference">
+        <div class="font-semibold tracking-wide text-lg">HVA.</div>
+        <nav class="flex gap-8 text-sm font-medium">
+            <a href="#about" class="hover:opacity-70 transition-opacity interactive-el">About</a>
+            <a href="#projects" class="hover:opacity-70 transition-opacity interactive-el">Projects</a>
+            <a href="#experience" class="hover:opacity-70 transition-opacity interactive-el">Experience</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-6xl mx-auto px-6 pt-40 pb-24 space-y-32">
+        
+        <!-- Hero -->
+        <section class="text-center space-y-6">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-white/90">Harsh Vardhan Anand</h1>
+            <p class="text-xl text-white/50 max-w-2xl mx-auto font-light">
+                Data Analyst & Systems Engineer blending hardware logic with fluid digital experiences. 
+                Undergrad at USICT.
+            </p>
+        </section>
+
+        <!-- Projects -->
+        <section id="projects" class="space-y-8">
+            <h2 class="text-2xl font-semibold text-white/80">Selected Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projects-container">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- Experience -->
+        <section id="experience" class="space-y-8">
+            <h2 class="text-2xl font-semibold text-white/80">Experience & Education</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="exp-container">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- 1. DATA (v3 forces cache clear) ---
+        const hvaData = {
+            projects: [
+                { title: "Nifty 50 Algorithmic Trading", category: "Data Analytics", desc: "Python-based statistical models tracking market trends and quarterly equity analysis." },
+                { title: "ALU Design with Vivado", category: "Hardware/ECE", desc: "Arithmetic Logic Unit design and simulation utilizing Vivado Design Suite." },
+                { title: "Arch Linux Workflow", category: "Systems", desc: "Custom Wayland/Hyprland compositor configuration for peak developer efficiency." },
+                { title: "CS50 Analytics Apps", category: "Software", desc: "Command-line tools and web utilities utilizing Python and SQL for data tracking." }
+            ],
+            experience: [
+                { role: "Data Analytics Intern", org: "InAmigos", duration: "Oct 2026 - Present", desc: "Optimizing data structures and preparing analytics dashboards." },
+                { role: "B.Tech ECE (Undergrad)", org: "USICT, New Delhi", duration: "2024 - 2028", desc: "Focusing on hardware systems, digital logic, and signal processing." }
+            ]
+        };
+
+        // Render Data
+        const projContainer = document.getElementById('projects-container');
+        hvaData.projects.forEach(p => {
+            projContainer.innerHTML += `
+                <div class="spatial-card p-8 interactive-el">
+                    <div class="text-xs font-mono text-white/40 mb-2">${p.category}</div>
+                    <h3 class="text-xl font-medium text-white/90 mb-3">${p.title}</h3>
+                    <p class="text-sm text-white/60 leading-relaxed">${p.desc}</p>
+                </div>
+            `;
+        });
+
+        const expContainer = document.getElementById('exp-container');
+        hvaData.experience.forEach(e => {
+            expContainer.innerHTML += `
+                <div class="spatial-card p-8 interactive-el">
+                    <div class="text-xs font-mono text-white/40 mb-2">${e.duration}</div>
+                    <h3 class="text-xl font-medium text-white/90 mb-1">${e.role}</h3>
+                    <div class="text-sm text-white/80 mb-3">${e.org}</div>
+                    <p class="text-sm text-white/60 leading-relaxed">${e.desc}</p>
+                </div>
+            `;
+        });
+
+        // --- 2. CUSTOM CURSOR & FLUID BOX LOGIC ---
+        const cursor = document.getElementById('custom-cursor');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+
+            // Handle Fluid Boxes & 3D Tilt
+            document.querySelectorAll('.spatial-card').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                
+                // Set fluid liquid glow coordinates
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--fluid-x', `${x}px`);
+                card.style.setProperty('--fluid-y', `${y}px`);
+
+                // Set 3D Tilt based on proximity
+                const cardCenterX = rect.left + rect.width / 2;
+                const cardCenterY = rect.top + rect.height / 2;
+                const distX = e.clientX - cardCenterX;
+                const distY = e.clientY - cardCenterY;
+
+                if (Math.abs(distX) < 300 && Math.abs(distY) < 300) {
+                    const tiltX = (distY / (rect.height / 2)) * -4;
+                    const tiltY = (distX / (rect.width / 2)) * 4;
+                    card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(10px)`;
+                } else {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+                }
+            });
+        });
+
+        // Cursor hover states
+        document.querySelectorAll('.interactive-el').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        // --- 3. THREE.JS METALLIC ORBS ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('webgl-canvas'), alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        
+        camera.position.z = 30;
+
+        const orbs = [];
+        const geo = new THREE.SphereGeometry(3, 64, 64);
+        
+        // Frosted glass / metallic material
+        const mat = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            metalness: 0.9,
+            roughness: 0.1,
+            transmission: 0.9,
+            thickness: 1.5,
+            clearcoat: 1.0,
+        });
+
+        for(let i = 0; i < 5; i++) {
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 20 - 10);
+            mesh.userData = {
+                ox: mesh.position.x, oy: mesh.position.y,
+                speedX: Math.random() * 0.002, speedY: Math.random() * 0.002
+            };
+            scene.add(mesh);
+            orbs.push(mesh);
+        }
+
+        // Lighting that follows mouse
+        const cursorLight = new THREE.PointLight(0xffffff, 2, 50);
+        scene.add(cursorLight);
+        scene.add(new THREE.AmbientLight(0x222233, 1));
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = Date.now();
+
+            // Move light to cursor
+            const vec = new THREE.Vector3((mouseX / window.innerWidth) * 2 - 1, -(mouseY / window.innerHeight) * 2 + 1, 0.5);
+            vec.unproject(camera);
+            vec.sub(camera.position).normalize();
+            const distance = -camera.position.z / vec.z;
+            cursorLight.position.copy(camera.position).add(vec.multiplyScalar(distance));
+
+            // Float orbs gently
+            orbs.forEach((orb, i) => {
+                orb.position.y = orb.userData.oy + Math.sin(time * orb.userData.speedY + i) * 3;
+                orb.position.x = orb.userData.ox + Math.cos(time * orb.userData.speedX + i) * 3;
+            });
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
