@@ -1,4 +1,5 @@
-import { useRef, ComponentType } from 'react';
+import { useRef } from 'react';
+import type { LucideIcon } from 'lucide-react';
 import { motion, useScroll, useSpring, useTransform, useReducedMotion, MotionValue } from 'framer-motion';
 import Magnet from './Magnet';
 
@@ -13,7 +14,7 @@ import Magnet from './Magnet';
   Works for any number of parts (2-6 looks best).
 */
 
-export type Part = { name: string; sub: string; Icon: ComponentType<{ size?: number; className?: string }>; href?: string };
+export type Part = { name: string; sub: string; Icon: LucideIcon; href?: string };
 
 const T = [0, 0.14, 0.46, 0.56, 0.84, 0.92, 1];
 const ease = (t: number) => t * t * (3 - 2 * t);
