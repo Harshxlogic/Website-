@@ -83,15 +83,16 @@ const more=[['Education','B.Tech in Electronics and Communication Engineering, U
 // A card taller than the screen scrolls until its bottom is visible, then pins (top = vh - height).
 const RT='rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px]';
 const decks:[string,string[][],string][]=[['Skills',skills,'#FFFFFF'],['Experience',experience,'#D7E2EA'],['More',more,'#BBCCD7']];
+const compatibleIcon = (icon: typeof Terminal): Part['Icon'] => icon as unknown as Part['Icon'];
 const stageSkills:{parts:Part[];captions:[string,string,string]}={
- parts:[{name:'Programming',sub:'C · Python · CLI',Icon:Terminal},{name:'AI & Data',sub:'Pandas · NumPy · Seaborn',Icon:BarChart3},{name:'Embedded',sub:'ESP32 · GPIO · ADC',Icon:Cpu},
-  {name:'Hardware',sub:'FPGA · RTL · KiCAD',Icon:CircuitBoard},{name:'Dev Tools',sub:'Git · Linux · VS Code',Icon:GitBranch}],
+ parts:[{name:'Programming',sub:'C · Python · CLI',Icon:compatibleIcon(Terminal)},{name:'AI & Data',sub:'Pandas · NumPy · Seaborn',Icon:compatibleIcon(BarChart3)},{name:'Embedded',sub:'ESP32 · GPIO · ADC',Icon:compatibleIcon(Cpu)},
+  {name:'Hardware',sub:'FPGA · RTL · KiCAD',Icon:compatibleIcon(CircuitBoard)},{name:'Dev Tools',sub:'Git · Linux · VS Code',Icon:compatibleIcon(GitBranch)}],
  captions:['One skill set, assembled','Pulled apart, each skill on its own','Locked in: what I work with']};
 const stageExperience:{parts:Part[];captions:[string,string,string]}={
- parts:[{name:'Python Intern',sub:'Dynamite Webtech',Icon:Briefcase},{name:'Data Intern',sub:'InAmigos Foundation',Icon:LineChart},{name:'Coding Club',sub:'Event Coordinator · Tech Lead',Icon:Users}],
+ parts:[{name:'Python Intern',sub:'Dynamite Webtech',Icon:compatibleIcon(Briefcase)},{name:'Data Intern',sub:'InAmigos Foundation',Icon:compatibleIcon(LineChart)},{name:'Coding Club',sub:'Event Coordinator · Tech Lead',Icon:compatibleIcon(Users)}],
  captions:['Experience, assembled','Pulled apart, each role on its own','Locked in: where I have worked']};
 const stageProjects:{parts:Part[];captions:[string,string,string]}={
- parts:[{name:'4-Bit ALU',sub:'Hardware · Oct 2026',Icon:Calculator},{name:'Sales Analysis',sub:'Data Analytics · Aug 2026',Icon:ShoppingCart},{name:'Music CLI',sub:'Python · Aug 2026',Icon:Music}],
+ parts:[{name:'4-Bit ALU',sub:'Hardware · Oct 2026',Icon:compatibleIcon(Calculator)},{name:'Sales Analysis',sub:'Data Analytics · Aug 2026',Icon:compatibleIcon(ShoppingCart)},{name:'Music CLI',sub:'Python · Aug 2026',Icon:compatibleIcon(Music)}],
  captions:['Projects, assembled','Pulled apart, each build on its own','Locked in: what I have built']};
 const stages:Record<string,{title:string;mock:string;parts:Part[];captions:[string,string,string]}>={
  Skills:{title:'Skills',mock:'harsh.dev / skills',...stageSkills},
