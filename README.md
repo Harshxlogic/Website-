@@ -11,3 +11,6 @@ Edit your GitHub link in src/App.tsx (const GITHUB).
   Edit the `stageSkills`, `stageExperience` and `stageProjects` objects in src/App.tsx to change the parts and captions.
   Pass `height={380}` (vh of scroll) to make an animation longer or shorter.
 - Hero bust: public/bust-hd.png (4x upscale of bust.png), animated in src/BustHead.tsx.
+
+
+ SUPPP!!!
