@@ -2,3 +2,39 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body,#root{background:#0C0C0C;font-family:'Kanit',sans-serif}
 .hero-heading{background:linear-gradient(180deg,#646973 0%,#BBCCD7 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+
+/* Animated liquid-glass typography for the hero name */
+.liquid-name {
+  width: 100%;
+  overflow: visible;
+  isolation: isolate;
+}
+.liquid-name svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.liquid-name-type {
+  font-family: 'Kanit', sans-serif;
+  font-size: 136px;
+  font-weight: 900;
+  letter-spacing: -5px;
+}
+.liquid-name-outline {
+  font-family: 'Kanit', sans-serif;
+  font-size: 136px;
+  font-weight: 900;
+  letter-spacing: -5px;
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  .liquid-name-type, .liquid-name-outline {
+    font-size: 136px;
+    letter-spacing: -4px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liquid-name-type { filter: none; }
+}
